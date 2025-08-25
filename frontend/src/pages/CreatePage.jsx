@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Box, Button, Container, Heading, Input, VStack } from '@chakra-ui/react';
 import { useColorModeValue } from '@/components/ui/color-mode';
 import { useUserStore } from '@/store/user';
+import { useNavigate } from 'react-router-dom';
 
 const CreatePage = () => {
     const [newUser, setNewUser] = useState({
@@ -9,12 +10,21 @@ const CreatePage = () => {
         password: "",
     });
 
-    const {createUser} = useUserStore();
+    const navigate = useNavigate();
+    const {createUser, findUserByNameForSignUp} = useUserStore();
     const handleAddUser = async () => {
         console.log(newUser);
-        const {success, message} = await createUser(newUser);
-        console.log("Success:", success);
-        console.log("Message:", message);
+        const {success, message} = await findUserByNameForSignUp(newUser);
+        console.log("Success del findUser:", success);
+        if (success) {
+            const {success, message} = await createUser(newUser);
+            console.log("Success:", success);
+            console.log("Message:", message);
+            alert("Registrado correctamente");
+            navigate("/mainPage");
+        } else {
+            alert("Ya existe ese nombre de usuario");
+        }
     };
 
     return (

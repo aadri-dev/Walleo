@@ -37,5 +37,23 @@ export const useUserStore = create((set) => ({
             return { success: false, message:"Contraseña incorrecta"}
         }
         return { success: true, message:"Sesión iniciada correctamente"}
+    },
+    findUserByNameForSignUp: async (newUser) => {
+        if(!newUser.userName || !newUser.password) {
+            return {success:false, message:"Please fill in all fields"}
+        }
+        const res = await fetch(`/api/users/${newUser.userName}`, {
+            method:"GET",
+            headers:{
+                "Content-Type":"application/json"
+            },
+        });
+        const data = await res.json();
+        console.log("Data:", data);
+        if(!data.success) {
+            return { success: true, message:"Usuario nuevo"}
+        } else {
+            return { success: false, message:"Usuario existente"}
+        }
     }
 }));
