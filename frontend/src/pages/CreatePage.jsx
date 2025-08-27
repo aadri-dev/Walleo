@@ -21,7 +21,7 @@ const CreatePage = () => {
             console.log("Success:", success);
             console.log("Message:", message);
             alert("Registrado correctamente");
-            navigate("/mainPage");
+            navigate(`/mainPage/${newUser.userName}`);
         } else {
             alert("Ya existe ese nombre de usuario");
         }

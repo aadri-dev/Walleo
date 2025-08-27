@@ -19,7 +19,7 @@ const HomePage = () => {
         console.log("Success:", success);
         
         if (success) {
-            navigate("/mainPage");
+            navigate(`/mainPage/${newUser.userName}`);
         } else {
             alert(message);
         }
