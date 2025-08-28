@@ -13,6 +13,10 @@ const accountSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    percentage:{
+        type: Number,
+        required: true
+    },
     amount:{
         type: Number,
         required: true
