@@ -12,6 +12,17 @@ export const getAccounts = async (req, res) => {
     }
 };
 
+export const getAccount = async (req, res) => {
+    try{
+        const {userName, name} = req.params;
+        const account = await Account.find({ userName: userName, name: name });
+        res.status(200).json({ success: true, data: account});
+    } catch (error) {
+        console.log("Error al obtener la cuenta:", error.message);
+        res.status(500).json({ success: false, message: "Server Error"})
+    }
+};
+
 export const createAccount = async (req, res) => {
     const account = req.body;
 

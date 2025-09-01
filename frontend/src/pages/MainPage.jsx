@@ -5,7 +5,7 @@ import { useAccountStore } from '@/store/account';
 import { useParams } from 'react-router-dom';
 
 const MainPage = () => {
-    const { findAccountsUser, accounts } = useAccountStore();
+    const { findAccountsUser, accounts, addIncome, addSpend } = useAccountStore();
     const { userName } = useParams();
 
     const [newAccountIncome, setNewAccountIncome] = useState({
@@ -18,11 +18,11 @@ const MainPage = () => {
     });
 
     const handleIncome = async () => {
-        console.log(newAccountIncome);
+        addIncome(userName, newAccountIncome.amount);
     };
 
     const handleSpend = async () => {
-        console.log(newAccountSpend);
+        addSpend(userName, newAccountSpend.name, newAccountSpend.amount);
     };
 
     useEffect(() => {
