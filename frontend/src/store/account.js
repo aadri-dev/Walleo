@@ -3,21 +3,21 @@ import { create } from "zustand";
 export const useAccountStore = create((set) => ({
     accounts: [],
     setUsers: (accounts) => set({ accounts }),
-    // createUser: async (newUser) => {
-    //     if(!newUser.userName || !newUser.password) {
-    //         return {success:false, message:"Please fill in all fields"}
-    //     }
-    //     const res = await fetch("/api/users", {
-    //         method:"POST",
-    //         headers:{
-    //             "Content-Type":"application/json"
-    //         },
-    //         body: JSON.stringify(newUser),
-    //     });
-    //     const data = await res.json();
-    //     set((state) => ({users:[...state.users, data.data]}));
-    //     return { success: true, message:"User created successfully"}
-    // },
+    createAccount: async (account) => {
+        if(!account.name || !account.description || !account.percentage || !account.amount) {
+            return {success:false, message:"Please fill in all fields"}
+        }
+        const res = await fetch("/api/accounts", {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify(account),
+        });
+        const data = await res.json();
+        set((state) => ({accounts:[...state.accounts, data.data]}));
+        return { success: true, message:"Account created successfully"}
+    },
     findAccountsUser: async (user) => {
         const res = await fetch(`/api/accounts/${user}`, {
             method:"GET",
@@ -86,9 +86,35 @@ export const useAccountStore = create((set) => ({
                         "Content-Type":"application/json"
                     },
                     body: JSON.stringify(data.data[0]),
-                });
-                const data2 = await res.json();
-                console.log("Data updated:", data2);
+            });
+            const data2 = await res.json();
+            console.log("Data updated:", data2);
+        }
+    },
+    deleteAccountUser: async (user, account) => {
+        const res = await fetch(`/api/accounts/${user}/${account}`, {
+            method:"GET",
+            headers:{
+                "Content-Type":"application/json"
+            },
+        });
+        const data = await res.json();
+        console.log("Data:", data);
+        if (!data.success) {
+            return { success: false, message:"No existe esta cuenta para este usuario"}
+        } else {
+            const res = await fetch(`/api/accounts/${data.data[0]._id}`, {
+                    method:"DELETE",
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+            });
+            const data2 = await res.json();
+            if(!data2.success) {
+                return { success: false, message:"Error al eliminar cuenta"}
+            } else {
+                return { success: true, message:"Cuenta eliminada correctamente"}
+            }
         }
     }
 }));

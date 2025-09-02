@@ -1,11 +1,11 @@
-import { Container, Text, VStack, Table, Box, Input, Button } from '@chakra-ui/react';
+import { Container, Text, VStack, Table, Box, Input, Button, Field, Popover, Portal, Stack } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useAccountStore } from '@/store/account';
 import { useParams } from 'react-router-dom';
 
 const MainPage = () => {
-    const { findAccountsUser, accounts, addIncome, addSpend } = useAccountStore();
+    const { findAccountsUser, accounts, addIncome, addSpend, createAccount, deleteAccountUser } = useAccountStore();
     const { userName } = useParams();
 
     const [newAccountIncome, setNewAccountIncome] = useState({
@@ -17,12 +17,32 @@ const MainPage = () => {
         amount: "",
     });
 
+    const [newAccount, setNewAccount] = useState ({
+        userName: userName,
+        name: "",
+        description: "",
+        percentage: "",
+        amount: "",
+    });
+
+    const [deleteAccount, setDeleteAccount] = useState({
+        name: "",
+    });
+
     const handleIncome = async () => {
         addIncome(userName, newAccountIncome.amount);
     };
 
     const handleSpend = async () => {
         addSpend(userName, newAccountSpend.name, newAccountSpend.amount);
+    };
+
+    const handleCreation = async () => {
+        createAccount(newAccount);
+    };
+
+    const handleDelete = async () => {
+        deleteAccountUser(userName, deleteAccount.name);
     };
 
     useEffect(() => {
@@ -35,6 +55,44 @@ const MainPage = () => {
                 <Text fontSize={"30"} fontWeight={"bold"} bgGradient={"linear(to-r, cyan.400, blue.500)"} bgClip={"text"} textAlign={"center"} color={"lightblue"}>
                     Tus cuentas
                 </Text>
+                <Popover.Root>
+                    <Popover.Trigger asChild>
+                        <Button size="sm" variant="solid">
+                            Crear cuenta
+                        </Button>
+                    </Popover.Trigger>
+                    <Portal>
+                        <Popover.Positioner>
+                            <Popover.Content>
+                                <Popover.Arrow />
+                                <Popover.Body>
+                                    <Stack gap="4">
+                                        <Field.Root>
+                                            <Field.Label>Nombre</Field.Label>
+                                            <Input name='name' value={newAccount.name} onChange={(e) => setNewAccount({...newAccount, name: e.target.value})} />
+                                        </Field.Root>
+                                        <Field.Root>
+                                            <Field.Label>Descripción</Field.Label>
+                                            <Input name='description' value={newAccount.description} onChange={(e) => setNewAccount({...newAccount, description: e.target.value})} />
+                                        </Field.Root>
+                                        <Field.Root>
+                                            <Field.Label>Porcentaje</Field.Label>
+                                            <Input name='percentage' value={newAccount.percentage} onChange={(e) => setNewAccount({...newAccount, percentage: e.target.value})} />
+                                        </Field.Root>
+                                        <Field.Root>
+                                            <Field.Label>Cantidad</Field.Label>
+                                            <Input name='amount' value={newAccount.amount} onChange={(e) => setNewAccount({...newAccount, amount: e.target.value})} />
+                                        </Field.Root>
+                                        <Button size="sm" variant="solid" onClick={handleCreation}>
+                                            Crear
+                                        </Button>
+                                    </Stack>
+                                </Popover.Body>
+                                <Popover.CloseTrigger />
+                            </Popover.Content>
+                        </Popover.Positioner>
+                    </Portal>
+                </Popover.Root>
                 {accounts.length > 0 ? (
                     <Table.Root size={"sm"}>
                         <Table.Header>
@@ -61,6 +119,32 @@ const MainPage = () => {
                     No hay cuentas creadas
                 </Text>
                 )}
+                <Popover.Root>
+                    <Popover.Trigger asChild>
+                        <Button size="sm" variant="solid">
+                            Eliminar cuenta
+                        </Button>
+                    </Popover.Trigger>
+                    <Portal>
+                        <Popover.Positioner>
+                            <Popover.Content>
+                                <Popover.Arrow />
+                                <Popover.Body>
+                                    <Stack gap="4">
+                                        <Field.Root>
+                                            <Field.Label>Nombre</Field.Label>
+                                            <Input name='name' value={deleteAccount.name} onChange={(e) => setDeleteAccount({...deleteAccount, name: e.target.value})} />
+                                        </Field.Root>
+                                        <Button size="sm" variant="solid" onClick={handleDelete}>
+                                            Eliminar
+                                        </Button>
+                                    </Stack>
+                                </Popover.Body>
+                                <Popover.CloseTrigger />
+                            </Popover.Content>
+                        </Popover.Positioner>
+                    </Portal>
+                </Popover.Root>
                 <Box w={"1/2"} p={6} rounded={"lg"} shadow={"md"}>
                     <VStack spacing={4}>
                         <Input placeholder='Cantidad' name='amount' value={newAccountIncome.amount} onChange={(e) => setNewAccountIncome({...newAccountIncome, amount: e.target.value})} />
