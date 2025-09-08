@@ -1,12 +1,15 @@
-import { Container, Text, VStack, Table, Box, Input, Button, Field, Popover, Portal, Stack } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import { Container, Text, VStack, Table, Box, Input, Button, Field, Popover, Portal, Stack, useActionBar } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
 import { useAccountStore } from '@/store/account';
-import { useParams } from 'react-router-dom';
+import { useUserStore } from '@/store/user';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const MainPage = () => {
     const { findAccountsUser, accounts, addIncome, addSpend, createAccount, deleteAccountUser } = useAccountStore();
     const { userName } = useParams();
+    const { user: userStore } = useUserStore();
+    const navigate = useNavigate();
+    const [user, setUser] = useState(userStore || null);
 
     const [newAccountIncome, setNewAccountIncome] = useState({
         amount: "",
@@ -38,16 +41,54 @@ const MainPage = () => {
     };
 
     const handleCreation = async () => {
-        createAccount(newAccount);
+        let existsAccount = 0;
+        let totalPercentage = 0;
+        for (let i = 0; i < accounts.length; i++) {
+            let minusAccount = accounts[i].name.toLowerCase();
+            let minusNewAccount = newAccount.name.toLowerCase();
+            if (minusAccount == minusNewAccount) {
+                alert("No se puede crear una cuenta con un nombre que ya existe");
+                existsAccount = 1;
+                break;
+            }
+            totalPercentage += accounts[i].percentage;
+        }
+        if (existsAccount == 0 && ((parseFloat(totalPercentage, 10) + parseFloat(newAccount.percentage, 10)) <= 1)) {
+            createAccount(newAccount);
+        } else {
+            alert("El porcentaje total no debe superar el 100%");
+        }
     };
 
     const handleDelete = async () => {
         deleteAccountUser(userName, deleteAccount.name);
     };
 
+    // useEffect(() => {
+    //     findAccountsUser(userName);
+    // }, [findAccountsUser]);
+
     useEffect(() => {
-        findAccountsUser(userName);
-    }, [findAccountsUser]);
+        if (!user) {
+            const storedUser = localStorage.getItem("user");
+            if (storedUser) {
+                const parsedUser = JSON.parse(storedUser);
+                setUser(parsedUser);
+                setNewAccount(prev => ({ ...prev, userName: parsedUser.userName }));
+            } else {
+                navigate("/"); // si no hay user, redirige al login
+            }
+        }
+    }, [user, navigate]);
+
+    // Cargar cuentas cuando tengamos userName
+    useEffect(() => {
+        if (user?.userName) {
+            findAccountsUser(user.userName);
+        }
+    }, [user, findAccountsUser]);
+
+    if (!user) return null; // mientras carga o redirige
     
     return (
         <Container maxW={"container.xl"} py={12}>

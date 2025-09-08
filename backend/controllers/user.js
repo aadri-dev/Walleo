@@ -1,5 +1,7 @@
 import User from "../models/user.js";
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import { generateToken } from "../middleware/auth.js";
 
 export const getUsers = async (req, res) => {
     try{
@@ -11,7 +13,7 @@ export const getUsers = async (req, res) => {
     }
 };
 
-export const getUsersByName = async (req, res) => {
+export const getUsersByName = async (req, res) => { 
     try {
         const {userName} = req.params;
         const savedUserName = await User.findOne({ userName: userName});
@@ -31,14 +33,36 @@ export const createUser = async (req, res) => {
         return res.status(400).json({ success: false, message: "Introduce todos los datos"});
     }
 
-    const newUser = new User(user);
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+
+    const newUser = new User({ userName: user.userName, password: hashedPassword});
 
     try {
         await newUser.save();
-        res.status(201).json({ success: true, data: newUser});
+        const token = generateToken(newUser);
+        res.status(201).json({ success: true, data: newUser, token, user: {id: newUser._id, userName: newUser.userName}});
     } catch (error) {
         console.log("Error al crear usuario:", error.message);
         res.status(500).json({ success: false, message: "Server Error"});
+    }
+};
+
+export const login = async (req, res) => {
+    try {
+        const { userName, password } = req.body;
+        const savedUser = await User.findOne({ userName });
+        if (!savedUser) {
+            return res.status(404).json({ success: false, message: "Usuario no encontrado"});
+        }
+        const validPassword = await bcrypt.compare(password, savedUser.password);
+        if (!validPassword) {
+            return res.status(401).json({ success: false, message: "Contraseña incorrecta"});
+        }
+        const token = generateToken(savedUser);
+        return res.status(200).json({ success: true, message: "Login correcto", token, user: { id: savedUser._id, userName: savedUser.userName}});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: false, message: "Server Error"});
     }
 };
 
@@ -71,4 +95,8 @@ export const updateUser = async (req,res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: "Server Error"});
     }
+};
+
+export const perfil = async (req, res) => {
+    res.json({ mensaje: "Bienvenido a tu perfil", usuario: req.user });
 };

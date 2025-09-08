@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Box, Button, Container, Heading, Input, VStack } from '@chakra-ui/react';
 import { useColorModeValue } from '@/components/ui/color-mode';
 import { useUserStore } from '@/store/user';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '@/store/AuthContext';
 
 const CreatePage = () => {
     const [newUser, setNewUser] = useState({
@@ -12,14 +13,15 @@ const CreatePage = () => {
 
     const navigate = useNavigate();
     const {createUser, findUserByNameForSignUp} = useUserStore();
+    const { setUser } = useContext(AuthContext);
     const handleAddUser = async () => {
         console.log(newUser);
         const {success, message} = await findUserByNameForSignUp(newUser);
         console.log("Success del findUser:", success);
         if (success) {
-            const {success, message} = await createUser(newUser);
-            console.log("Success:", success);
-            console.log("Message:", message);
+            const {success, message, user, token} = await createUser(newUser);
+            localStorage.setItem("token", token);
+            localStorage.setItem("user", user);
             alert("Registrado correctamente");
             navigate(`/mainPage/${newUser.userName}`);
         } else {
