@@ -37,39 +37,39 @@ const Navbar = () => {
                 flexDirection={{base:"column", sm:"row"}}
             >
                 <Text 
-                    fontSize={{base:"22", sm:"28"}}
+                    textStyle={"2xl"}
                     fontWeight={"bold"}
                     textTransform={"uppercase"}
                     textAlign={"center"}
-                    bgGradient={"linear(to-r, cyan.400, blue.500)"}
                     bgClip={"text"}
                     color={'lightblue'}
                     >
                         <Link to={user ? `/mainPage/${user.userName}` : "/"}>Walleo</Link>
                 </Text>
                 <HStack spacing={2} alignItems={"center"}>
-                    <Link to={"/create"}>
-                        <Button>
-                            <FaSquarePlus fontSize={20} />
-                        </Button>
-                    </Link>
                     {user && (
-                        <Text fontSize="md" fontWeight="medium">
+                        <Text fontSize="lg" fontWeight={"bold"} paddingRight={"20px"}>
                             Hola, {user.userName}
                         </Text>
+                    )}
+                    <Link to={"/create"}>
+                        <Button>
+                            {/* <FaSquarePlus fontSize={20} /> */}
+                            Registrarse
+                        </Button>
+                    </Link>
+                    {user ? (
+                        <Button colorScheme="red" onClick={handleLogout}>
+                            Salir
+                        </Button>
+                    ) : (
+                        <Link to="/">
+                            <Button colorScheme="blue">Iniciar Sesión</Button>
+                        </Link>
                     )}
                     <Button onClick={toggleColorMode}>
                         {colorMode === "light" ? "🌚" : "🌞"}
                     </Button>
-                    {user ? (
-                        <Button colorScheme="red" onClick={handleLogout}>
-                            Logout
-                        </Button>
-                    ) : (
-                        <Link to="/">
-                            <Button colorScheme="blue">Login</Button>
-                        </Link>
-                    )}
                 </HStack>
             </Flex>
         </Container>

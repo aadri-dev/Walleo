@@ -1,4 +1,4 @@
-import { Container, Text, VStack, Table, Box, Input, Button, Field, Popover, Portal, Stack, useActionBar } from '@chakra-ui/react';
+import { Container, Text, VStack, Table, Box, Input, Button, Field, Popover, Portal, Stack, Grid, GridItem } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useAccountStore } from '@/store/account';
 import { useUserStore } from '@/store/user';
@@ -93,64 +93,96 @@ const MainPage = () => {
     return (
         <Container maxW={"container.xl"} py={12}>
             <VStack spacing={8}>
-                <Text fontSize={"30"} fontWeight={"bold"} bgGradient={"linear(to-r, cyan.400, blue.500)"} bgClip={"text"} textAlign={"center"} color={"lightblue"}>
+                <Text fontSize={"3xl"} fontWeight={"bold"} bgClip={"text"} textAlign={"center"} color={"lightblue"}>
                     Tus cuentas
                 </Text>
-                <Popover.Root>
-                    <Popover.Trigger asChild>
-                        <Button size="sm" variant="solid">
-                            Crear cuenta
-                        </Button>
-                    </Popover.Trigger>
-                    <Portal>
-                        <Popover.Positioner>
-                            <Popover.Content>
-                                <Popover.Arrow />
-                                <Popover.Body>
-                                    <Stack gap="4">
-                                        <Field.Root>
-                                            <Field.Label>Nombre</Field.Label>
-                                            <Input name='name' value={newAccount.name} onChange={(e) => setNewAccount({...newAccount, name: e.target.value})} />
-                                        </Field.Root>
-                                        <Field.Root>
-                                            <Field.Label>Descripción</Field.Label>
-                                            <Input name='description' value={newAccount.description} onChange={(e) => setNewAccount({...newAccount, description: e.target.value})} />
-                                        </Field.Root>
-                                        <Field.Root>
-                                            <Field.Label>Porcentaje</Field.Label>
-                                            <Input name='percentage' value={newAccount.percentage} onChange={(e) => setNewAccount({...newAccount, percentage: e.target.value})} />
-                                        </Field.Root>
-                                        <Field.Root>
-                                            <Field.Label>Cantidad</Field.Label>
-                                            <Input name='amount' value={newAccount.amount} onChange={(e) => setNewAccount({...newAccount, amount: e.target.value})} />
-                                        </Field.Root>
-                                        <Button size="sm" variant="solid" onClick={handleCreation}>
-                                            Crear
-                                        </Button>
-                                    </Stack>
-                                </Popover.Body>
-                                <Popover.CloseTrigger />
-                            </Popover.Content>
-                        </Popover.Positioner>
-                    </Portal>
-                </Popover.Root>
+                <Grid templateColumns={"repeat(2, 5fr)"} gap={"40"}>
+                    <GridItem>
+                        <Popover.Root>
+                            <Popover.Trigger asChild>
+                                <Button size="md" variant="solid" fontSize={"md"}>
+                                    Crear cuenta
+                                </Button>
+                            </Popover.Trigger>
+                            <Portal>
+                                <Popover.Positioner>
+                                    <Popover.Content>
+                                        <Popover.Arrow />
+                                        <Popover.Body>
+                                            <Stack gap="3">
+                                                <Field.Root>
+                                                    <Field.Label>Nombre</Field.Label>
+                                                    <Input name='name' value={newAccount.name} onChange={(e) => setNewAccount({...newAccount, name: e.target.value})} />
+                                                </Field.Root>
+                                                <Field.Root>
+                                                    <Field.Label>Descripción</Field.Label>
+                                                    <Input name='description' value={newAccount.description} onChange={(e) => setNewAccount({...newAccount, description: e.target.value})} />
+                                                </Field.Root>
+                                                <Field.Root>
+                                                    <Field.Label>Porcentaje</Field.Label>
+                                                    <Input name='percentage' value={newAccount.percentage} onChange={(e) => setNewAccount({...newAccount, percentage: e.target.value})} />
+                                                </Field.Root>
+                                                <Field.Root>
+                                                    <Field.Label>Cantidad</Field.Label>
+                                                    <Input name='amount' value={newAccount.amount} onChange={(e) => setNewAccount({...newAccount, amount: e.target.value})} />
+                                                </Field.Root>
+                                                <Button size="sm" variant="solid" onClick={handleCreation}>
+                                                    Crear
+                                                </Button>
+                                            </Stack>
+                                        </Popover.Body>
+                                        <Popover.CloseTrigger />
+                                    </Popover.Content>
+                                </Popover.Positioner>
+                            </Portal>
+                        </Popover.Root>
+                    </GridItem>
+                    <GridItem>
+                        <Popover.Root>
+                            <Popover.Trigger asChild>
+                                <Button size="md" variant="solid" fontSize={"md"}>
+                                    Eliminar cuenta
+                                </Button>
+                            </Popover.Trigger>
+                            <Portal>
+                                <Popover.Positioner>
+                                    <Popover.Content>
+                                        <Popover.Arrow />
+                                        <Popover.Body>
+                                            <Stack gap="3">
+                                                <Field.Root>
+                                                    <Field.Label>Nombre</Field.Label>
+                                                    <Input name='name' value={deleteAccount.name} onChange={(e) => setDeleteAccount({...deleteAccount, name: e.target.value})} />
+                                                </Field.Root>
+                                                <Button size="sm" variant="solid" onClick={handleDelete}>
+                                                    Eliminar
+                                                </Button>
+                                            </Stack>
+                                        </Popover.Body>
+                                        <Popover.CloseTrigger />
+                                    </Popover.Content>
+                                </Popover.Positioner>
+                            </Portal>
+                        </Popover.Root>
+                    </GridItem>
+                </Grid>
                 {accounts.length > 0 ? (
-                    <Table.Root size={"sm"}>
+                    <Table.Root size={"lg"} showColumnBorder interactive>
                         <Table.Header>
                             <Table.Row>
-                                <Table.ColumnHeader>Nombre</Table.ColumnHeader>
-                                <Table.ColumnHeader>Descripción</Table.ColumnHeader>
-                                <Table.ColumnHeader>Porcentaje asociado</Table.ColumnHeader>
-                                <Table.ColumnHeader>Cantidad</Table.ColumnHeader>
+                                <Table.ColumnHeader textAlign={"center"}>Nombre</Table.ColumnHeader>
+                                <Table.ColumnHeader textAlign={"center"}>Descripción</Table.ColumnHeader>
+                                <Table.ColumnHeader textAlign={"center"}>Porcentaje asociado</Table.ColumnHeader>
+                                <Table.ColumnHeader textAlign={"center"}>Cantidad</Table.ColumnHeader>
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
                             {accounts.map((account) => (
                                 <Table.Row key={account._id}>
-                                    <Table.Cell>{account.name}</Table.Cell>
-                                    <Table.Cell>{account.description}</Table.Cell>
-                                    <Table.Cell>{account.percentage}</Table.Cell>
-                                    <Table.Cell>{account.amount}</Table.Cell>
+                                    <Table.Cell textAlign={"center"}>{account.name}</Table.Cell>
+                                    <Table.Cell textAlign={"center"}>{account.description}</Table.Cell>
+                                    <Table.Cell textAlign={"center"}>{account.percentage}</Table.Cell>
+                                    <Table.Cell textAlign={"center"}>{account.amount}</Table.Cell>
                                 </Table.Row>
                             ))}
                         </Table.Body>
@@ -160,49 +192,29 @@ const MainPage = () => {
                     No hay cuentas creadas
                 </Text>
                 )}
-                <Popover.Root>
-                    <Popover.Trigger asChild>
-                        <Button size="sm" variant="solid">
-                            Eliminar cuenta
-                        </Button>
-                    </Popover.Trigger>
-                    <Portal>
-                        <Popover.Positioner>
-                            <Popover.Content>
-                                <Popover.Arrow />
-                                <Popover.Body>
-                                    <Stack gap="4">
-                                        <Field.Root>
-                                            <Field.Label>Nombre</Field.Label>
-                                            <Input name='name' value={deleteAccount.name} onChange={(e) => setDeleteAccount({...deleteAccount, name: e.target.value})} />
-                                        </Field.Root>
-                                        <Button size="sm" variant="solid" onClick={handleDelete}>
-                                            Eliminar
-                                        </Button>
-                                    </Stack>
-                                </Popover.Body>
-                                <Popover.CloseTrigger />
-                            </Popover.Content>
-                        </Popover.Positioner>
-                    </Portal>
-                </Popover.Root>
-                <Box w={"1/2"} p={6} rounded={"lg"} shadow={"md"}>
-                    <VStack spacing={4}>
-                        <Input placeholder='Cantidad' name='amount' value={newAccountIncome.amount} onChange={(e) => setNewAccountIncome({...newAccountIncome, amount: e.target.value})} />
-                        <Button colorScheme='blue' onClick={handleIncome} w='full'>
-                            Añadir ingreso
-                        </Button>
-                    </VStack>
-                </Box>
-                <Box w={"1/2"} p={6} rounded={"lg"} shadow={"md"}>
-                    <VStack spacing={4}>
-                        <Input placeholder='Cantidad' name='amount' value={newAccountSpend.amount} onChange={(e) => setNewAccountSpend({...newAccountSpend, amount: e.target.value})} />
-                        <Input placeholder='Nombre de cuenta' name='name' value={newAccountSpend.name} onChange={(e) => setNewAccountSpend({...newAccountSpend, name: e.target.value})} />
-                        <Button colorScheme='blue' onClick={handleSpend} w='full'>
-                            Añadir gasto
-                        </Button>
-                    </VStack>
-                </Box>
+                <Grid templateColumns={"repeat(2, 5fr)"} gap={"40"}>
+                    <GridItem>
+                        <Box w={"500px"} p={6} rounded={"3xl"} shadow={"xl"} >
+                            <VStack spacing={4}>
+                                <Input placeholder='Cantidad' variant={"subtle"} size={"xl"} name='amount' value={newAccountIncome.amount} onChange={(e) => setNewAccountIncome({...newAccountIncome, amount: e.target.value})} />
+                                <Button colorScheme='blue' onClick={handleIncome} w='full'fontSize={"md"}>
+                                    Añadir ingreso
+                                </Button>
+                            </VStack>
+                        </Box>
+                    </GridItem>
+                    <GridItem>
+                        <Box w={"500px"} p={6} rounded={"3xl"} shadow={"xl"}>
+                            <VStack spacing={4}>
+                                <Input placeholder='Cantidad' variant={"subtle"} size={"xl"} name='amount' value={newAccountSpend.amount} onChange={(e) => setNewAccountSpend({...newAccountSpend, amount: e.target.value})} />
+                                <Input placeholder='Nombre de cuenta' variant={"subtle"} size={"xl"} name='name' value={newAccountSpend.name} onChange={(e) => setNewAccountSpend({...newAccountSpend, name: e.target.value})} />
+                                <Button colorScheme='blue' onClick={handleSpend} w='full'fontSize={"md"}>
+                                    Añadir gasto
+                                </Button>
+                            </VStack>
+                        </Box>
+                    </GridItem>
+                </Grid>
             </VStack>
         </Container>
     )

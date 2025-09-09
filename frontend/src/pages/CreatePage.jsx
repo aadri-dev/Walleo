@@ -32,14 +32,14 @@ const CreatePage = () => {
     return (
         <Container maxW={"container.sm"}>
             <VStack spacing={8}>
-                <Heading as={"h1"} size={"2x1"} textAlign={"center"} mb={8}>
+                <Heading as={"h1"} size={"3xl"} textAlign={"center"} mb={8}>
                     Registrarse
                 </Heading>
-                <Box w={"full"} bg={useColorModeValue("white", "gray.800")} p={6} rounded={"lg"} shadow={"md"}>
+                <Box w={"full"} bg={useColorModeValue("white", "gray.800")} p={6} rounded={"3xl"} shadow={"xl"}>
                     <VStack spacing={4}>
-                        <Input placeholder='User Name' name='userName' value={newUser.userName} onChange={(e) => setNewUser({...newUser, userName: e.target.value})} />
-                        <Input placeholder='Password' name='password' type='password' value={newUser.password} onChange={(e) => setNewUser({...newUser, password: e.target.value})} />
-                        <Button colorScheme='blue' onClick={handleAddUser} w='full'>
+                        <Input placeholder='Nombre de usuario' variant={"subtle"} size={"xl"} name='userName' value={newUser.userName} onChange={(e) => setNewUser({...newUser, userName: e.target.value})} />
+                        <Input placeholder='Contraseña' variant={"subtle"} size={"xl"} name='password' type='password' value={newUser.password} onChange={(e) => setNewUser({...newUser, password: e.target.value})} />
+                        <Button colorScheme='blue' onClick={handleAddUser} w='full' fontSize={"md"}>
                             Registrarse
                         </Button>
                     </VStack>
